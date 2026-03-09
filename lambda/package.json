@@ -1,0 +1,12 @@
+{
+  "name": "serverless-contact-form-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda handler for serverless contact form using SES",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.600.0"
+  }
+}

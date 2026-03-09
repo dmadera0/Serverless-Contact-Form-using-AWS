@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #e8d5a3;
+      --dark:        #1a1a1a;
+      --mid:         #333;
+      --muted:       #888;
+      --border:      #ddd;
+      --bg:          #fafafa;
+      --error:       #c0392b;
+      --error-bg:    #fdf0ef;
+      --success:     #2e7d32;
+      --radius:      3px;
+      --transition:  180ms ease;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--dark);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────────────── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--gold);
+    }
+
+    .card-header {
+      background: var(--dark);
+      padding: 32px 40px;
+    }
+
+    .card-header .eyebrow {
+      font-family: 'DM Mono', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .card-header h1 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: .02em;
+    }
+
+    .card-body {
+      padding: 36px 40px 40px;
+    }
+
+    /* ── Form fields ──────────────────────────────────────────────────────── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 22px;
+    }
+
+    label {
+      font-family: 'DM Mono', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    label .optional {
+      font-size: 10px;
+      letter-spacing: 0;
+      color: #bbb;
+      text-transform: none;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px;
+      color: var(--dark);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,.12);
+    }
+
+    input.error, textarea.error {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .field-error {
+      display: none;
+      margin-top: 4px;
+      font-family: 'DM Mono', Courier, monospace;
+      font-size: 11px;
+      color: var(--error);
+    }
+
+    .field-error.visible { display: block; }
+
+    /* ── Submit button ────────────────────────────────────────────────────── */
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Mono', Courier, monospace;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition), opacity var(--transition);
+      margin-top: 4px;
+    }
+
+    .btn-submit:hover:not(:disabled) { background: #2d2d2d; }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    .loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Success state ────────────────────────────────────────────────────── */
+    .success-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 48px 40px;
+    }
+
+    .success-state.visible { display: flex; }
+    .form-wrap.hidden { display: none; }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .success-icon svg { stroke: var(--gold); }
+
+    .success-state h2 {
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .success-state p {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      max-width: 360px;
+    }
+
+    .btn-reset {
+      font-family: 'DM Mono', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: none;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .btn-reset:hover { background: var(--gold); color: #fff; }
+
+    /* ── Error toast ──────────────────────────────────────────────────────── */
+    .toast {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--error-bg);
+      border: 1px solid #f5c6c2;
+      border-left: 3px solid var(--error);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-size: 15px;
+      color: var(--error);
+    }
+
+    .toast.visible { display: flex; }
+
+    .toast-icon { flex-shrink: 0; margin-top: 2px; }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .card-header, .card-body { padding-left: 24px; padding-right: 24px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="card-header">
+        <p class="eyebrow">Get in touch</p>
+        <h1>Contact Us</h1>
+      </div>
+
+      <div class="card-body">
+
+        <!-- Error toast -->
+        <div class="toast" id="toast" role="alert" aria-live="assertive">
+          <span class="toast-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </span>
+          <span id="toast-message"></span>
+        </div>
+
+        <!-- Form -->
+        <div class="form-wrap" id="form-wrap">
+          <form id="contact-form" novalidate>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" maxlength="100" required />
+                <span class="field-error" id="name-error"></span>
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required />
+                <span class="field-error" id="email-error"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone <span class="optional">(optional)</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="20" />
+            </div>
+
+            <div class="field">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" maxlength="200" required />
+              <span class="field-error" id="subject-error"></span>
+            </div>
+
+            <div class="field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" maxlength="5000" required></textarea>
+              <span class="field-error" id="message-error"></span>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">
+              <span class="spinner" id="spinner"></span>
+              <span id="btn-label">Send Message</span>
+            </button>
+
+          </form>
+        </div>
+
+        <!-- Success state -->
+        <div class="success-state" id="success-state" aria-live="polite">
+          <div class="success-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h2>Message Sent</h2>
+          <p>Thank you for reaching out. We'll get back to you as soon as possible.</p>
+          <button class="btn-reset" id="reset-btn">Send another message</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // CONFIGURATION — replace with your Terraform output value
+    // =========================================================================
+    const API_ENDPOINT = 'https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com/contact';
+    // =========================================================================
+
+    // ── Validation rules (mirror server-side) ────────────────────────────────
+    const rules = {
+      name:    { min: 2,  max: 100,  message: 'Name must be at least 2 characters.' },
+      email:   { max: 254,           message: 'Please enter a valid email address.', isEmail: true },
+      subject: { min: 3,  max: 200,  message: 'Subject must be at least 3 characters.' },
+      message: { min: 10, max: 5000, message: 'Message must be at least 10 characters.' },
+      phone:   { max: 20 },
+    };
+
+    function isValidEmail(v) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    }
+
+    function validateField(name, value) {
+      const rule = rules[name];
+      if (!rule) return null;
+      const v = value.trim();
+      if (rule.min !== undefined && v.length < rule.min) return rule.message;
+      if (rule.isEmail && !isValidEmail(v)) return rule.message;
+      return null;
+    }
+
+    // ── DOM helpers ──────────────────────────────────────────────────────────
+    const form       = document.getElementById('contact-form');
+    const formWrap   = document.getElementById('form-wrap');
+    const successEl  = document.getElementById('success-state');
+    const submitBtn  = document.getElementById('submit-btn');
+    const btnLabel   = document.getElementById('btn-label');
+    const spinner    = document.getElementById('spinner');
+    const toast      = document.getElementById('toast');
+    const toastMsg   = document.getElementById('toast-message');
+    const resetBtn   = document.getElementById('reset-btn');
+
+    function showFieldError(fieldName, message) {
+      const input = document.getElementById(fieldName);
+      const errEl = document.getElementById(`${fieldName}-error`);
+      if (!input || !errEl) return;
+      input.classList.add('error');
+      errEl.textContent = message;
+      errEl.classList.add('visible');
+    }
+
+    function clearFieldError(fieldName) {
+      const input = document.getElementById(fieldName);
+      const errEl = document.getElementById(`${fieldName}-error`);
+      if (!input || !errEl) return;
+      input.classList.remove('error');
+      errEl.textContent = '';
+      errEl.classList.remove('visible');
+    }
+
+    function clearAllErrors() {
+      ['name', 'email', 'subject', 'message'].forEach(clearFieldError);
+      hideToast();
+    }
+
+    function showToast(message) {
+      toastMsg.textContent = message;
+      toast.classList.add('visible');
+    }
+
+    function hideToast() {
+      toast.classList.remove('visible');
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.classList.toggle('loading', loading);
+      btnLabel.textContent = loading ? 'Sending…' : 'Send Message';
+    }
+
+    // ── Inline validation on blur ────────────────────────────────────────────
+    ['name', 'email', 'subject', 'message'].forEach(name => {
+      const input = document.getElementById(name);
+      if (!input) return;
+      input.addEventListener('blur', () => {
+        const err = validateField(name, input.value);
+        if (err) showFieldError(name, err);
+        else clearFieldError(name);
+      });
+      input.addEventListener('input', () => {
+        if (input.classList.contains('error')) {
+          const err = validateField(name, input.value);
+          if (!err) clearFieldError(name);
+        }
+      });
+    });
+
+    // ── Form submission ──────────────────────────────────────────────────────
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearAllErrors();
+
+      const data = {
+        name:    document.getElementById('name').value.trim(),
+        email:   document.getElementById('email').value.trim(),
+        phone:   document.getElementById('phone').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim(),
+      };
+
+      // Client-side validation pass
+      const clientErrors = [];
+      for (const field of ['name', 'email', 'subject', 'message']) {
+        const err = validateField(field, data[field]);
+        if (err) clientErrors.push({ field, message: err });
+      }
+
+      if (clientErrors.length) {
+        clientErrors.forEach(({ field, message }) => showFieldError(field, message));
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(data),
+        });
+
+        const json = await res.json();
+
+        if (json.success) {
+          formWrap.classList.add('hidden');
+          successEl.classList.add('visible');
+        } else if (json.errors && Array.isArray(json.errors)) {
+          json.errors.forEach(({ field, message }) => showFieldError(field, message));
+        } else {
+          showToast(json.error || 'Something went wrong. Please try again.');
+        }
+      } catch {
+        showToast('Network error — please check your connection and try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // ── Reset ────────────────────────────────────────────────────────────────
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      clearAllErrors();
+      successEl.classList.remove('visible');
+      formWrap.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

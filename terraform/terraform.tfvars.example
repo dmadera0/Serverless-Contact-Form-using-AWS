@@ -1,0 +1,29 @@
+# Copy this file to terraform.tfvars and fill in the values.
+# terraform.tfvars is git-ignored — never commit real credentials.
+
+# AWS region
+aws_region = "us-east-1"
+
+# Resource name prefix
+project_name = "contact-form"
+
+# SES-verified email that will RECEIVE form submissions
+to_email = "you@example.com"
+
+# SES-verified email (or domain identity) that will appear as the SENDER
+from_email = "noreply@example.com"
+
+# CORS allowed origins — restrict to your domain(s) in production
+# allowed_origins = ["https://yoursite.com"]
+allowed_origins = ["*"]
+
+# WAF rate limiting (optional)
+enable_waf     = false
+waf_rate_limit = 100
+
+# Resource tags
+tags = {
+  Project     = "contact-form"
+  ManagedBy   = "terraform"
+  Environment = "production"
+}
